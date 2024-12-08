@@ -13,8 +13,8 @@ function createElement(type, props, ...children) {
 function createTextElement(text) {
   return {
     type: "TEXT_ELEMENT",
-    nodeValue: text,
     props: {
+      nodeValue: text,
       children: [],
     },
   };
