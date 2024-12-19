@@ -16,9 +16,10 @@ function createDom(fiber) {
   return dom;
 }
 
+// 发出第一个fiber root fiber
 function render(element, container) {
   // 初始化第一次工作
-  nextUnitOfWork = {
+  wipRoot = {
     dom: container,
     props: {
       children: [element],
@@ -26,10 +27,29 @@ function render(element, container) {
     sibiling: null,
     child: null,
     parent: null,
-  }
+  };
+  nextUnitOfWork = wipRoot;
 }
 
+
 let nextUnitOfWork = null;
+
+let wipRoot = null;
+
+function commitRoot() {
+  commitWork(wipRoot.child);
+  wipRoot = null;
+}
+
+function commitWork(fiber) {
+  if (!fiber) {
+    return;
+  }
+  const domParent = fiber.parent.dom;
+  domParent.appendChild(fiber.dom);
+  commitWork(fiber.child);
+  commitWork(fiber.sibiling);
+}
 
 //调度函数
 function workLoop(deadLine) {
@@ -44,6 +64,11 @@ function workLoop(deadLine) {
   }
   // 没有时间就请求下一次
   requestIdleCallback(workLoop)
+
+  //commit 阶段
+  if(!nextUnitOfWork && wipRoot) {
+    commitRoot();
+  }
 }
 
 // 第一次请求
@@ -55,15 +80,16 @@ function performUnitOfWork(fiber){
     fiber.dom = createDom(fiber)
   }
 
-  //追加到父节点
-  if(fiber.parent) {
-    fiber.parent.dom.append(fiber.dom)
-  }
+  // //追加到父节点
+  // if(fiber.parent) {
+  //   fiber.parent.dom.append(fiber.dom)
+  // }
 
   //给children新建fiber
   const elements = fiber.props.children;
   let prevSibling = null;
 
+  //建立fiber之间的联系，构建Fiber Tree
   for(let i = 0;i< elements.length;i++){
     const newFiber = {
       type: elements[i].type,
@@ -73,14 +99,32 @@ function performUnitOfWork(fiber){
       child: null,
       sibiling: null,
     };
+
+    
     if (i === 0) {
+      //第一个就是child
       fiber.child = newFiber;
     } else {
+      //否则是兄弟
       prevSibling.sibiling = newFiber;
     }
+    // 建立兄弟之间的指向
     prevSibling = newFiber;
   }
+  // 返回下一个fiber
+  if(fiber.child) {
+    return fiber.child;
+  } 
+  let nextFiber = fiber;
+  while (nextFiber) {
+    if(nextFiber.sibiling) {
+      return nextFiber.sibiling
+    }
+    nextFiber = nextFiber.parent;
+  }
 }
+
+
 
 
 export default render;

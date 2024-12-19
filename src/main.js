@@ -2,7 +2,7 @@ import { createElement, render } from "../micro-react";
 
 const element = createElement(
   "h1",
-  { id: "title", class: "hello" },
+  { id: "title", class: "hello", style: "color: red" },
   "hello world",
   createElement(
     "a",
