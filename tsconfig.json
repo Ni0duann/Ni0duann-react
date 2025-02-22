@@ -1,0 +1,20 @@
+{
+  "compileOnSave": true, // 保存时编译
+  "compilerOptions": {
+    "target": "ESNext", // 目标版本为 ESNext
+    "useDefineForClassFields": true, // 使用 define 关键字定义类字段
+    "module": "ESNext", // 模块系统为 ESNext
+    "lib": ["ESNext", "DOM"], // 使用的库为 ESNext 和 DOM
+    "sourceMap": true, // 生成 source map 文件
+    "resolveJsonModule": true, // 解析 JSON 模块
+    "isolatedModules": true, // 启用每个文件的单独模块
+    "noEmit": true, // 不生成输出文件
+    "noUnusedLocals": true, // 检查未使用的局部变量
+    "noUnusedParameters": true, // 检查未使用的参数
+    "noImplicitReturns": false, // 允许函数没有显式返回值
+    "skipLibCheck": true, // 跳过库文件的类型检查
+    "strict": true, // 启用所有严格类型检查选项
+    "esModuleInterop": true, // 启用 ES 模块互操作性
+    "baseUrl": "./packages" // 基础路径为 ./packages
+  }
+}
